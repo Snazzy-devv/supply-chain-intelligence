@@ -121,4 +121,4 @@ with col_chat:
         with st.chat_message("assistant"):
             response = f"Neon Sentinel processed: '{prompt}'. Strategic analysis suggests diversifying your Tier-2 suppliers in Southeast Asia to mitigate current port congestion trends."
             st.markdown(response)
-        st.session_state.messages.append({"role": "assistant", "content": response})s
+        st.session_state.messages.append({"role": "assistant", "content": response})
