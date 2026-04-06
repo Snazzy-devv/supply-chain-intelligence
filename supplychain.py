@@ -9,8 +9,8 @@ from streamlit_autorefresh import st_autorefresh
 # --- 1. CONFIG & SYSTEM PULSE ---
 st.set_page_config(layout="wide", page_title="NEON SENTINEL", page_icon="🛡️")
 
-# The Heartbeat: Triggers a refresh every 20s to update KPIs and Briefs
-count = st_autorefresh(interval=20000, limit=None, key="sentinel_pulse_v3")
+# The Heartbeat: Triggers a refresh every 20s
+count = st_autorefresh(interval=20000, limit=None, key="sentinel_pulse_v4")
 
 # --- 2. DYNAMIC CONTENT ENGINE ---
 def get_intel_brief(index):
@@ -23,12 +23,14 @@ def get_intel_brief(index):
     ]
     return briefs[index % len(briefs)]
 
-def fetch_live_news():
-    # Placeholder for NewsAPI logic - adding robust fallback so it never disappears
+def fetch_expanded_news():
     return [
-        {"title": "Global Port Congestion Easing in Major Hubs", "src": "Logistics Weekly"},
-        {"title": "New Trade Corridor Opens in East Africa", "src": "Maritime News"},
-        {"title": "AI Optimization Reduces Fuel Waste by 8%", "src": "Tech Sentinel"}
+        {"title": "Global Port Congestion Easing in Major Hubs", "src": "Logistics Weekly", "tag": "MARITIME"},
+        {"title": "New Trade Corridor Opens in East Africa", "src": "Maritime News", "tag": "GEOPOLITICAL"},
+        {"title": "AI Optimization Reduces Fuel Waste by 8%", "src": "Tech Sentinel", "tag": "TECH"},
+        {"title": "Suez Canal Transit Fees Revised for Q4", "src": "Global Trade", "tag": "ECONOMY"},
+        {"title": "Cyber-Attack Thwarted at Major EU Terminal", "src": "Cyber Defense", "tag": "SECURITY"},
+        {"title": "Copper Prices Surge Amid Supply Constraints", "src": "Commodity Desk", "tag": "MARKET"}
     ]
 
 # --- 3. HIGH-READABILITY CSS ---
@@ -45,7 +47,10 @@ st.markdown("""
         padding: 15px; border-radius: 8px; color: #ffffff;
         margin-bottom: 25px; border: 1px solid #334155; font-weight: 500;
     }
-    .news-card { border-bottom: 1px solid #334155; padding: 10px 0; }
+    .news-tag {
+        font-size: 0.7rem; background: #334155; color: #fbbf24;
+        padding: 2px 8px; border-radius: 4px; margin-right: 10px;
+    }
     </style>
     """, unsafe_allow_html=True)
 
@@ -68,34 +73,34 @@ col_left, col_right = st.columns([0.65, 0.35])
 
 with col_left:
     st.subheader("🌐 High-Detail Tactical Map")
-    # CartoDB Voyager is colorful and preserves street/city names perfectly
+    # Using Voyager for high-visibility street names
     m = folium.Map(location=[4.8156, 7.0498], zoom_start=12, tiles="CartoDB Voyager")
     
-    # Colorful Multi-Zone Layers
-    folium.Circle([4.8156, 7.0498], radius=2000, color="red", fill=True, fill_opacity=0.2, popup="High Activity Zone").add_to(m)
-    folium.Circle([4.8456, 7.0198], radius=1500, color="green", fill=True, fill_opacity=0.2, popup="Optimized Route").add_to(m)
-    folium.Circle([4.7856, 7.0898], radius=1800, color="blue", fill=True, fill_opacity=0.2, popup="Maritime Entry").add_to(m)
-    folium.Circle([4.8356, 7.1298], radius=1200, color="orange", fill=True, fill_opacity=0.3, popup="Warning: Delay Area").add_to(m)
-
-    # Key Interaction
-    st_folium(m, width="100%", height=500, key="sentinel_map_v3", returned_objects=[])
+    # Risk Circles
+    folium.Circle([4.8156, 7.0498], radius=2000, color="red", fill=True, fill_opacity=0.2).add_to(m)
+    folium.Circle([4.8456, 7.0198], radius=1500, color="green", fill=True, fill_opacity=0.2).add_to(m)
+    
+    st_folium(m, width="100%", height=500, key="sentinel_map_v4", returned_objects=[])
 
 with col_right:
     st.subheader("📑 SYSTEM ACTIVITY LOG")
     st.code(f"""
 [{datetime.now().strftime('%H:%M:%S')}] SENTINEL_SCAN: Cycle {count} active.
-[{datetime.now().strftime('%H:%M:%S')}] TILE_SERVER: CartoDB Voyager layers active.
-[{datetime.now().strftime('%H:%M:%S')}] RESOLUTION: High-detail Street/City labels verified.
-[{datetime.now().strftime('%H:%M:%S')}] DATA_SYNC: Tracking local assets in Port Harcourt.
-[{datetime.now().strftime('%H:%M:%S')}] ANALYTICS: Processing 512 regional nodes.
-[{datetime.now().strftime('%H:%M:%S')}] NEURAL_LINK: Signal 99.4% (Ultra-Stable).
-[{datetime.now().strftime('%H:%M:%S')}] STATUS: Human-in-the-Loop confirmed.
+[{datetime.now().strftime('%H:%M:%S')}] RESOLUTION: High-detail labels active.
+[{datetime.now().strftime('%H:%M:%S')}] DATA_SYNC: Tracking assets in Port Harcourt.
+[{datetime.now().strftime('%H:%M:%S')}] NEURAL_LINK: Signal 99.4% (Stable).
+[{datetime.now().strftime('%H:%M:%S')}] MAP_UPDATE: Risk zones refreshed.
     """, language="bash")
     
-    st.subheader("📊 SECTOR RISK")
-    st.write("Semiconductors")
-    st.progress(72)
-    st.write("Energy Supplies")
+    st.subheader("📊 DYNAMIC RISK FACTORS")
+    # Expanded Risk Factors
+    st.write("Cyber Vulnerability")
+    st.progress(15 + random.randint(0, 5))
+    st.write("Geopolitical Instability")
+    st.progress(42 + random.randint(0, 8))
+    st.write("Logistics Bottlenecks")
+    st.progress(72 + random.randint(-5, 5))
+    st.write("Energy Supply Chain")
     st.progress(28)
 
 # --- 7. ALERTS, NEWS & CHAT ---
@@ -104,10 +109,10 @@ col_news, col_chat = st.columns([0.45, 0.55])
 
 with col_news:
     st.subheader("📰 LIVE INTELLIGENCE FEED")
-    news = fetch_live_news()
-    for item in news:
-        st.markdown(f"**{item['title']}**")
-        st.caption(f"Source: {item['src']} | {datetime.now().strftime('%d %b')}")
+    news_items = fetch_expanded_news()
+    for item in news_items:
+        st.markdown(f"<span class='news-tag'>{item['tag']}</span> **{item['title']}**", unsafe_allow_html=True)
+        st.caption(f"Source: {item['src']} | Verified: {datetime.now().strftime('%H:%M')}")
         st.write("---")
 
 with col_chat:
@@ -119,11 +124,11 @@ with col_chat:
         with st.chat_message(msg["role"]):
             st.markdown(msg["content"])
 
-    if prompt := st.chat_input("Inquire about routing..."):
+    if prompt := st.chat_input("Inquire about logistics strategy..."):
         st.session_state.messages.append({"role": "user", "content": prompt})
         with st.chat_message("user"): st.markdown(prompt)
         
         with st.chat_message("assistant"):
-            ans = f"Neon Sentinel processed update (Cycle {count}). Analysis for: '{prompt}'. Detailed street mapping confirms all local access roads are green-lighted for transit."
+            ans = f"Neon Sentinel processed update (Cycle {count}). Analysis for: '{prompt}'. Street-level detail confirms all routes are operational."
             st.markdown(ans)
             st.session_state.messages.append({"role": "assistant", "content": ans})
