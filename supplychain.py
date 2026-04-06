@@ -4,26 +4,39 @@ import folium
 from streamlit_folium import st_folium
 import requests
 from datetime import datetime
+import random
+from streamlit_autorefresh import st_autorefresh
 
-# --- 1. CONFIG & THEME ---
+# --- 1. CONFIG & AUTO-REFRESH ---
 st.set_page_config(layout="wide", page_title="NEON SENTINEL", page_icon="🛡️")
 
-# --- 2. DYNAMIC NEWS ENGINE ---
-NEWS_API_KEY = st.secrets.get("NEWS_API_KEY") or "YOUR_NEWSAPI_KEY_HERE"
+# Run the autorefresh every 20,000 milliseconds (20 seconds)
+# This keeps the counter in session_state so we can cycle through data
+count = st_autorefresh(interval=20000, limit=None, key="sentinel_refresh")
 
-@st.cache_data(ttl=1800)
-def fetch_dynamic_news():
-    try:
-        url = f"https://newsapi.org/v2/everything?q=logistics+supply+chain&language=en&sortBy=publishedAt&pageSize=5&apiKey={NEWS_API_KEY}"
-        response = requests.get(url)
-        if response.status_code == 200:
-            articles = response.json().get("articles", [])
-            return [{"title": a["title"], "src": a["source"]["name"], "url": a["url"]} for a in articles]
-    except Exception:
-        pass
-    return [{"title": "Global Trade Routes Stabilizing", "src": "Maritime Daily", "url": "#"}]
+# --- 2. DYNAMIC CONTENT ENGINE ---
+def get_dynamic_insight(index):
+    insights = [
+        "🔍 ANALYTIC: Predictive models suggest a 12% rise in South-China Sea congestion.",
+        "💡 STRATEGY: Consider shifting 15% of buffer stock to Rotterdam terminals.",
+        "⚡ ALERT: Automated clearing at Singapore Port is reducing dwell times.",
+        "🌐 MACRO: Global freight indices show stabilizing container costs for Q3.",
+        "🛡️ SECURITY: Cybersecurity protocols updated for all regional data-links."
+    ]
+    return insights[index % len(insights)]
 
-# --- 3. CUSTOM BRANDING & CSS ---
+# Dynamic KPI Logic (Simulating slight fluctuations every 20s)
+def get_kpi_data():
+    return {
+        "risk": 60 + random.randint(-5, 5),
+        "incidents": random.randint(5, 12),
+        "copper": 8900 + random.uniform(10, 100),
+        "lead_time": 22 + random.uniform(-1, 1)
+    }
+
+kpis = get_kpi_data()
+
+# --- 3. BRANDING & CSS ---
 st.markdown(f"""
     <style>
     .stApp {{ background-color: #0b1120; color: #f8fafc; }}
@@ -33,92 +46,80 @@ st.markdown(f"""
         border-radius: 12px;
         padding: 20px;
     }}
-    [data-testid="stMetricValue"] {{ color: #fbbf24; text-shadow: 0 0 12px rgba(251, 191, 36, 0.4); }}
-    .stAlert {{ background-color: #1e293b; border: 1px solid #334155; border-radius: 8px; }}
+    .insight-box {{
+        background: #1e293b;
+        border-left: 5px solid #fbbf24;
+        padding: 15px;
+        border-radius: 5px;
+        font-family: 'Courier New', Courier, monospace;
+        color: #fbbf24;
+        margin-bottom: 20px;
+    }}
     </style>
     """, unsafe_allow_html=True)
 
 st.title("🛡️ NEON SENTINEL | Industrial Intelligence")
 st.caption("AI-Powered Global Supply Chain Intelligence Hub")
 
-# --- 4. THE INTERACTIVE MAP LOGIC ---
+# The Dynamic Intelligence Brief (Changes every 20s)
+st.markdown(f'<div class="insight-box">{get_dynamic_insight(count)}</div>', unsafe_allow_html=True)
+
+# --- 4. TOP ROW: KPI CARDS (Dynamic) ---
+m1, m2, m3, m4 = st.columns(4)
+with m1: st.metric("GLOBAL RISK SCORE", f"{kpis['risk']}/100", delta="-2")
+with m2: st.metric("ACTIVE INCIDENTS", kpis['incidents'], delta="+1")
+with m3: st.metric("COPPER (LME/MT)", f"${kpis['copper']:.2f}", delta="+0.8%")
+with m4: st.metric("AVG LEAD TIME", f"{kpis['lead_time']:.1f} Days", delta="-0.5")
+
+st.divider()
+
+# --- 5. MIDDLE ROW: CLICKABLE MAP & LOGS ---
 col_left, col_right = st.columns([0.65, 0.35])
 
 with col_left:
-    st.subheader("🌐 Interactive Intelligence Hub")
-    
-    # Base Map with a balanced colorful-dark style
+    st.subheader("🌐 Global Logistics Intelligence Hub")
     m = folium.Map(
         location=[20, 10], zoom_start=2, 
         tiles="https://{s}.basemaps.cartocdn.com/rastertiles/voyager_labels_under/{z}/{x}/{y}{r}.png", 
-        attr='&copy; OpenStreetMap'
+        attr='&copy; CARTO'
     )
 
-    # ADDING COLORFUL RISK ZONES (Visualizing Green/Red areas)
-    # Red Zone (High Risk Area example)
-    folium.Rectangle(
-        bounds=[[10, -20], [30, 20]],
-        color="#ff4b4b", fill=True, fill_color="#ff4b4b", fill_opacity=0.2,
-        popup="HIGH RISK ZONE: Central Atlantic"
-    ).add_to(m)
-
-    # Green Zone (Optimized Area example)
-    folium.Rectangle(
-        bounds=[[35, -10], [55, 30]],
-        color="#22c55e", fill=True, fill_color="#22c55e", fill_opacity=0.2,
-        popup="OPTIMIZED ZONE: European Corridor"
-    ).add_to(m)
-
-    # Glow Markers
-    folium.CircleMarker(location=[1.3521, 103.8198], radius=10, color="#ff007f", fill=True, popup="Singapore").add_to(m)
-    folium.CircleMarker(location=[30.0444, 31.2357], radius=10, color="#00f2ff", fill=True, popup="Suez").add_to(m)
-
-    # CATCH THE CLICK: This is the key for interactivity
-    # returned_objects=["last_active_drawing"] makes the map "clickable"
+    # Risk Overlays
+    folium.Rectangle(bounds=[[10, -20], [30, 20]], color="#ff4b4b", fill=True, fill_opacity=0.15).add_to(m)
+    folium.Rectangle(bounds=[[35, -10], [55, 30]], color="#22c55e", fill=True, fill_opacity=0.15).add_to(m)
+    
+    # Render map and catch clicks
     map_data = st_folium(m, width="100%", height=450, returned_objects=["last_active_drawing"])
-
-    # Handle the Click Interaction
-    if map_data and map_data.get("last_active_drawing"):
-        clicked_location = map_data["last_active_drawing"]["geometry"]["coordinates"]
-        st.info(f"📍 Sentinel focus redirected to Coordinates: {clicked_location}")
-        # In a full build, you could use this coordinate to trigger a specific country search
 
 with col_right:
     st.subheader("📑 SYSTEM ACTIVITY LOG")
-    st.code(f"[{datetime.now().strftime('%H:%M')}] Sentinel-Scan: Initiated\n[{datetime.now().strftime('%H:%M')}] Mapping colorful risk zones...\n[{datetime.now().strftime('%H:%M')}] Click-listener: Active", language="bash")
+    st.code(f"[{datetime.now().strftime('%H:%M:%S')}] Sentinel-Scan: Refreshing...\n"
+            f"[{datetime.now().strftime('%H:%M:%S')}] Pulse Count: {count}\n"
+            f"[{datetime.now().strftime('%H:%M:%S')}] Latency: Optimal", language="bash")
     
-    st.subheader("📊 RISK EXPOSURE")
+    st.subheader("📊 SECTOR RISK")
     st.write("Semiconductors")
     st.progress(72)
     st.write("Energy Supplies")
     st.progress(28)
 
-# --- 5. BOTTOM ROW: DYNAMIC ALERTS & CONVERSATIONAL CHAT ---
+# --- 6. BOTTOM ROW: CONVERSATIONAL CHAT ---
 st.divider()
-col_alert, col_chat = st.columns([0.45, 0.55])
+if "messages" not in st.session_state:
+    st.session_state.messages = []
 
-with col_alert:
-    st.subheader("📰 LIVE LOGISTICS NEWS")
-    news_feed = fetch_dynamic_news()
-    for n in news_feed:
-        st.markdown(f"**{n['title']}**")
-        st.caption(f"Source: {n['src']} | [Read Article]({n['url']})")
-        st.write("---")
-
+col_chat, col_empty = st.columns([0.6, 0.4])
 with col_chat:
     st.subheader("💬 SENTINEL ASSISTANT")
-    if "messages" not in st.session_state:
-        st.session_state.messages = []
-
     for msg in st.session_state.messages:
         with st.chat_message(msg["role"]):
             st.markdown(msg["content"])
 
-    if prompt := st.chat_input("How can I assist with your logistics strategy?"):
-        st.chat_message("user").markdown(prompt)
+    if prompt := st.chat_input("Analyze specific route risks..."):
         st.session_state.messages.append({"role": "user", "content": prompt})
-
+        with st.chat_message("user"): st.markdown(prompt)
+        
         with st.chat_message("assistant"):
-            response = f"Neon Sentinel processed: '{prompt}'. Strategic analysis suggests diversifying your Tier-2 suppliers in Southeast Asia to mitigate current port congestion trends."
+            response = f"Neon Sentinel processed update {count}. Analyzing logistics for: '{prompt}'. I recommend monitoring Suez transit speeds given the current {kpis['risk']}% risk score."
             st.markdown(response)
         st.session_state.messages.append({"role": "assistant", "content": response})
