@@ -8,11 +8,14 @@ from streamlit_autorefresh import st_autorefresh
 
 # --- 1. CONFIG & SYSTEM PULSE (20 Seconds) ---
 st.set_page_config(layout="wide", page_title="NEON SENTINEL", page_icon="🛡️")
-
-# This is the heartbeat that forces the KPIs and Briefs to change every 20s
-count = st_autorefresh(interval=20000, limit=None, key="sentinel_pulse_v5")
+count = st_autorefresh(interval=20000, limit=None, key="sentinel_pulse_v6")
 
 # --- 2. DYNAMIC CONTENT ENGINE ---
+random.seed(count)
+# Real-time simulated copper price
+current_copper_price = 8942.50 + random.uniform(-10, 15)
+copper_status = "BULLISH" if current_copper_price > 8950 else "STABLE"
+
 def get_intel_brief(index):
     briefs = [
         "📡 ANALYTIC: Predictive models suggest a 12% rise in South-China Sea congestion.",
@@ -23,24 +26,15 @@ def get_intel_brief(index):
     ]
     return briefs[index % len(briefs)]
 
-def fetch_expanded_news():
-    return [
-        {"title": "Global Port Congestion Easing in Major Hubs", "src": "Logistics Weekly", "tag": "MARITIME"},
-        {"title": "New Trade Corridor Opens in East Africa", "src": "Maritime News", "tag": "GEOPOLITICAL"},
-        {"title": "AI Optimization Reduces Fuel Waste by 8%", "src": "Tech Sentinel", "tag": "TECH"},
-        {"title": "Suez Canal Transit Fees Revised for Q4", "src": "Global Trade", "tag": "ECONOMY"},
-        {"title": "Cyber-Attack Thwarted at Major EU Terminal", "src": "Cyber Defense", "tag": "SECURITY"}
-    ]
-
 # --- 3. HIGH-READABILITY CSS ---
 st.markdown("""
     <style>
     .stApp { background-color: #0b1120; color: #f8fafc; }
     div[data-testid="stMetric"] {
         background-color: #1e293b; border: 1px solid #334155;
-        border-radius: 12px; padding: 20px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+        border-radius: 12px; padding: 20px;
     }
-    [data-testid="stMetricValue"] { color: #fbbf24 !important; font-weight: 700 !important; font-size: 2.2rem !important; }
+    [data-testid="stMetricValue"] { color: #fbbf24 !important; font-weight: 700 !important; }
     .intel-box {
         background: #1e293b; border-left: 5px solid #fbbf24;
         padding: 15px; border-radius: 8px; color: #ffffff;
@@ -58,19 +52,12 @@ st.title("🛡️ NEON SENTINEL | Industrial Intelligence")
 st.caption("Professional Intelligence & Clinical Data Analysis Pipeline")
 st.markdown(f'<div class="intel-box">{get_intel_brief(count)}</div>', unsafe_allow_html=True)
 
-# --- 5. TOP ROW: DYNAMIC KPIs (Changes every 20s) ---
-# We use 'count' as a seed to ensure a new random value on every refresh
-random.seed(count) 
-risk_val = random.randint(58, 68)
-incident_val = random.randint(8, 15)
-copper_val = 8900 + random.uniform(10, 100)
-lead_val = 21.0 + random.uniform(0.1, 1.5)
-
+# --- 5. TOP ROW: DYNAMIC KPIs ---
 m1, m2, m3, m4 = st.columns(4)
-with m1: st.metric("GLOBAL RISK SCORE", f"{risk_val}/100", delta=f"{random.randint(-5, 5)}")
-with m2: st.metric("ACTIVE INCIDENTS", f"{incident_val}", delta="Live Update")
-with m3: st.metric("COPPER (LME/MT)", f"${copper_val:.2f}", delta="+1.4%")
-with m4: st.metric("AVG LEAD TIME", f"{lead_val:.1f} Days", delta="-0.8")
+with m1: st.metric("GLOBAL RISK SCORE", f"{64 + random.randint(-2, 2)}/100", delta="-2")
+with m2: st.metric("ACTIVE INCIDENTS", f"{12 + random.randint(0, 2)}", delta="+1")
+with m3: st.metric("COPPER (LME/MT)", f"${current_copper_price:.2f}", delta=f"{copper_status}")
+with m4: st.metric("AVG LEAD TIME", f"{21.8 + random.uniform(-0.3, 0.3):.1f} Days", delta="-0.4")
 
 st.divider()
 
@@ -78,51 +65,43 @@ st.divider()
 col_left, col_right = st.columns([0.65, 0.35])
 
 with col_left:
-    st.subheader("🌐 High-Detail Tactical Map (Streets & Roads Visible)")
-    # CartoDB Voyager ensures street names and city labels are crisp
+    st.subheader("🌐 High-Detail Tactical Map")
     m = folium.Map(location=[4.8156, 7.0498], zoom_start=13, tiles="CartoDB Voyager")
-    
-    # Colorful Risk Layers
-    folium.Circle([4.8156, 7.0498], radius=1000, color="red", fill=True, fill_opacity=0.3, popup="Red Alert: Road Blockage").add_to(m)
-    folium.Circle([4.8356, 7.0298], radius=800, color="green", fill=True, fill_opacity=0.2, popup="Green: Clear Path").add_to(m)
-    
-    st_folium(m, width="100%", height=500, key="sentinel_map_v5", returned_objects=[])
+    folium.Circle([4.8156, 7.0498], radius=1000, color="red", fill=True, fill_opacity=0.3).add_to(m)
+    st_folium(m, width="100%", height=500, key="sentinel_map_v6", returned_objects=[])
 
 with col_right:
     st.subheader("📑 SYSTEM ACTIVITY LOG")
     st.code(f"""
-[{datetime.now().strftime('%H:%M:%S')}] SENTINEL_SCAN: Refresh cycle {count} initiated.
-[{datetime.now().strftime('%H:%M:%S')}] RESOLUTION: High-detail Street/City labels active.
-[{datetime.now().strftime('%H:%M:%S')}] KPI_SYNC: Telemetry updated with 20s variance.
+[{datetime.now().strftime('%H:%M:%S')}] SENTINEL_SCAN: Cycle {count} active.
+[{datetime.now().strftime('%H:%M:%S')}] TELEMETRY: Copper Index verified as {copper_status}.
+[{datetime.now().strftime('%H:%M:%S')}] RESOLUTION: High-detail labels active.
 [{datetime.now().strftime('%H:%M:%S')}] NEURAL_LINK: Signal 99.4% (Stable).
-[{datetime.now().strftime('%H:%M:%S')}] GEO_FENCE: Monitoring Port Harcourt logistics.
     """, language="bash")
     
     st.subheader("📊 DYNAMIC RISK FACTORS")
     st.write("Cyber Vulnerability")
     st.progress(random.randint(10, 25))
-    st.write("Geopolitical Instability")
-    st.progress(random.randint(40, 55))
     st.write("Logistics Bottlenecks")
     st.progress(random.randint(65, 80))
 
-# --- 7. ALERTS, NEWS & CHAT ---
+# --- 7. ALERTS, NEWS & INTERACTIVE CHAT ---
 st.divider()
 col_alert, col_news, col_chat = st.columns([0.25, 0.35, 0.40])
 
 with col_alert:
     st.subheader("🚨 SYSTEM ALERTS")
-    st.info("⚠️ **Pacific Route:** Seasonal weather patterns may impact lead times.")
-    st.warning("🚧 **Rotterdam:** Minor scheduled maintenance on North Dock.")
-    st.error("📉 **Energy Alert:** Fuel costs up 2% in the last 4 hours.")
+    st.info("⚠️ **Pacific Route:** Seasonal weather patterns impacting lead times.")
+    st.warning("🚧 **Rotterdam:** Minor maintenance on North Dock.")
+    st.error("📉 **Energy Alert:** Fuel costs up 2% today.")
 
 with col_news:
     st.subheader("📰 LIVE INTELLIGENCE FEED")
-    news_items = fetch_expanded_news()
-    for item in news_items:
-        st.markdown(f"<span class='news-tag'>{item['tag']}</span> **{item['title']}**", unsafe_allow_html=True)
-        st.caption(f"{item['src']} | {datetime.now().strftime('%H:%M')}")
-        st.write("---")
+    st.markdown(f"<span class='news-tag'>MARKET</span> **Copper Price Update**", unsafe_allow_html=True)
+    st.caption(f"LME Index currently at ${current_copper_price:.2f}. Status: {copper_status}")
+    st.write("---")
+    st.markdown(f"<span class='news-tag'>TECH</span> **AI Optimization Peak**", unsafe_allow_html=True)
+    st.caption("Routing efficiency increased by 14% via Neural-Link.")
 
 with col_chat:
     st.subheader("💬 SENTINEL ASSISTANT")
@@ -133,11 +112,21 @@ with col_chat:
         with st.chat_message(msg["role"]):
             st.markdown(msg["content"])
 
-    if prompt := st.chat_input("Analyze specific routing..."):
+    if prompt := st.chat_input("Ask about copper, risk, or routing..."):
         st.session_state.messages.append({"role": "user", "content": prompt})
         with st.chat_message("user"): st.markdown(prompt)
         
         with st.chat_message("assistant"):
-            ans = f"Neon Sentinel processed update (Refresh #{count}). Detailed street mapping confirms all local access roads are green-lighted for the current '{prompt}' request."
-            st.markdown(ans)
-            st.session_state.messages.append({"role": "assistant", "content": ans})
+            # INTERACTIVE LOGIC: Actually check the prompt keywords
+            p = prompt.lower()
+            if "copper" in p:
+                response = f"The current price of Copper (LME/MT) is **${current_copper_price:.2f}**. Market sentiment is currently **{copper_status}** based on recent pulse telemetry."
+            elif "risk" in p:
+                response = f"Global Risk is currently flagged at **{64 + random.randint(-2, 2)}/100**. Primary drivers are Logistics Bottlenecks and Cyber Vulnerability."
+            elif "status" in p:
+                response = f"System Status: **Operational**. All mapping nodes are green, and neural-link signal strength is at 99.4%."
+            else:
+                response = f"Neon Sentinel confirms: '{prompt}'. Strategic analysis suggest prioritizing the current EU Green Corridor while tracking commodity fluctuations."
+            
+            st.markdown(response)
+            st.session_state.messages.append({"role": "assistant", "content": response})
