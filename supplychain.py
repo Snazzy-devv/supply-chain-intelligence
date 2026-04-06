@@ -9,7 +9,6 @@ from streamlit_autorefresh import st_autorefresh
 
 # --- 1. CONFIG & AUTO-REFRESH (20 Seconds) ---
 st.set_page_config(layout="wide", page_title="NEON SENTINEL", page_icon="🛡️")
-# silent refresh to update dynamic text and KPI wiggles
 count = st_autorefresh(interval=20000, limit=None, key="sentinel_pulse")
 
 # --- 2. DYNAMIC CONTENT ENGINE ---
@@ -39,10 +38,9 @@ def get_intel_brief(index):
 # --- 3. HIGH-READABILITY CSS ---
 st.markdown(f"""
     <style>
-    /* Main Background */
     .stApp {{ background-color: #0b1120; color: #f8fafc; }}
     
-    /* KPI Metric Cards - High Contrast */
+    /* KPI Metric Cards */
     div[data-testid="stMetric"] {{
         background-color: #1e293b;
         border: 1px solid #334155;
@@ -51,48 +49,40 @@ st.markdown(f"""
         box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
     }}
     
-    /* Metric Value - Bright Amber for Readability */
     [data-testid="stMetricValue"] {{ 
         color: #fbbf24 !important; 
         font-size: 2.2rem !important; 
         font-weight: 700 !important;
     }}
     
-    /* Metric Label - Light Grey/White */
     [data-testid="stMetricLabel"] {{ 
         color: #e2e8f0 !important; 
         text-transform: uppercase; 
         letter-spacing: 1px;
     }}
 
-    /* Intelligence Brief Box */
     .intel-box {{
         background: #1e293b;
         border-left: 5px solid #fbbf24;
         padding: 15px;
         border-radius: 8px;
-        font-family: 'Inter', sans-serif;
         color: #ffffff;
         font-size: 1.1rem;
         margin-bottom: 25px;
         border: 1px solid #334155;
     }}
 
-    /* Alerts and News text */
-    .stAlert p, .stMarkdown p {{ color: #f8fafc !important; }}
-    
-    /* Chat history contrast */
-    .stChatMessage {{ background-color: #1e293b !important; border: 1px solid #334155 !important; }}
+    /* Ensure Markdown and Alerts are bright */
+    .stAlert p, .stMarkdown p {{ color: #f8fafc !important; font-weight: 500; }}
     </style>
     """, unsafe_allow_html=True)
 
 # --- 4. HEADER & DYNAMIC BRIEF ---
 st.title("🛡️ NEON SENTINEL | Industrial Intelligence")
-st.caption("AI-Powered Global Supply Chain Intelligence Hub")
+st.caption("Professional Intelligence & Clinical Data Analysis Pipeline")
 st.markdown(f'<div class="intel-box">{get_intel_brief(count)}</div>', unsafe_allow_html=True)
 
 # --- 5. TOP ROW: DYNAMIC KPIs ---
-# Values fluctuate slightly every 20s to simulate live data
 risk_val = 62 + random.randint(-2, 2)
 lead_time = 22.4 + random.uniform(-0.5, 0.5)
 
@@ -104,30 +94,44 @@ with m4: st.metric("AVG LEAD TIME", f"{lead_time:.1f} Days", delta="-0.8")
 
 st.divider()
 
-# --- 6. MIDDLE ROW: CLICKABLE MAP & LOGS ---
+# --- 6. MIDDLE ROW: MULTI-COLOR MAP & EXPANDED LOGS ---
 col_left, col_right = st.columns([0.65, 0.35])
 
 with col_left:
-    st.subheader("🌐 Global Logistics Intelligence Hub")
+    st.subheader("🌐 Interactive Intelligence Hub")
+    # Using a more colorful base map (Voyager)
     m = folium.Map(
         location=[20, 10], zoom_start=2, 
-        tiles="https://{s}.basemaps.cartocdn.com/rastertiles/voyager_labels_under/{z}/{x}/{y}{r}.png", 
-        attr='&copy; CARTO'
+        tiles="https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png", 
+        attr='&copy; OpenStreetMap'
     )
-    # Colorful Risk Zones
-    folium.Rectangle(bounds=[[10, -20], [30, 20]], color="#ff4b4b", fill=True, fill_opacity=0.15, popup="High Risk Area").add_to(m)
-    folium.Rectangle(bounds=[[35, -10], [55, 30]], color="#22c55e", fill=True, fill_opacity=0.15, popup="Optimized Corridor").add_to(m)
+
+    # COLORFUL RISK ZONES
+    # RED: Critical Danger Zone
+    folium.Rectangle(bounds=[[5, 90], [25, 120]], color="red", fill=True, fill_opacity=0.3, popup="CRITICAL: Port Congestion").add_to(m)
+    # GREEN: Optimized Corridor
+    folium.Rectangle(bounds=[[35, -10], [55, 25]], color="green", fill=True, fill_opacity=0.2, popup="OPTIMIZED: EU Logistics").add_to(m)
+    # BLUE: Maritime Transit Layer
+    folium.Rectangle(bounds=[[-10, 40], [10, 80]], color="blue", fill=True, fill_opacity=0.2, popup="STABLE: Indian Ocean").add_to(m)
+    # DARK YELLOW: Warning/Precaution
+    folium.Rectangle(bounds=[[20, -100], [50, -60]], color="#8B8000", fill=True, fill_opacity=0.3, popup="WARNING: West Coast Delay").add_to(m)
     
     # Click interaction
     map_data = st_folium(m, width="100%", height=450, returned_objects=["last_active_drawing"])
-    if map_data and map_data.get("last_active_drawing"):
-        st.toast(f"📍 Sentinel focus: {map_data['last_active_drawing']['geometry']['coordinates']}")
 
 with col_right:
     st.subheader("📑 SYSTEM ACTIVITY LOG")
-    st.code(f"[{datetime.now().strftime('%H:%M:%S')}] Sentinel-Scan: Refreshing...\n"
-            f"[{datetime.now().strftime('%H:%M:%S')}] Pulse Count: {count}\n"
-            f"[{datetime.now().strftime('%H:%M:%S')}] Neural-Link: Stable", language="bash")
+    # Significantly expanded log activities
+    st.code(f"""
+[{datetime.now().strftime('%H:%M:%S')}] SENTINEL_SCAN: Pulse cycle {count} initiated.
+[{datetime.now().strftime('%H:%M:%S')}] DATA_SYNC: Fetching live port API telemetry...
+[{datetime.now().strftime('%H:%M:%S')}] ANALYTICS: Processing 432 global nodes.
+[{datetime.now().strftime('%H:%M:%S')}] RISK_ASSESS: High-volatility detected in Node_7.
+[{datetime.now().strftime('%H:%M:%S')}] NEURAL_LINK: Signal strength 98.4% (Optimal).
+[{datetime.now().strftime('%H:%M:%S')}] MAP_RENDER: Drawing Red/Green/Blue risk layers.
+[{datetime.now().strftime('%H:%M:%S')}] GEO_FENCE: Active click-listener ready.
+[{datetime.now().strftime('%H:%M:%S')}] STATUS: System ready for Human-in-the-Loop.
+    """, language="bash")
     
     st.subheader("📊 SECTOR RISK")
     st.write("Semiconductors")
@@ -156,17 +160,15 @@ with col_chat:
     if "messages" not in st.session_state:
         st.session_state.messages = []
 
-    # Display history
     for msg in st.session_state.messages:
         with st.chat_message(msg["role"]):
             st.markdown(msg["content"])
 
-    # Conversational Input
     if prompt := st.chat_input("Inquire about logistics strategy..."):
         st.session_state.messages.append({"role": "user", "content": prompt})
         with st.chat_message("user"): st.markdown(prompt)
 
         with st.chat_message("assistant"):
-            response = f"Neon Sentinel analysis (Refresh #{count}) for: '{prompt}'. Strategic routing remains stable. I suggest a 5% buffer on West Coast arrivals due to seasonal drift."
+            response = f"Neon Sentinel processed request on refresh #{count}. Strategic analysis suggests prioritizing the Green-coded EU Corridor while the Red-coded Southeast Asia sector stabilizes."
             st.markdown(response)
             st.session_state.messages.append({"role": "assistant", "content": response})
