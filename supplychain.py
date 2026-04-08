@@ -48,7 +48,7 @@ st.markdown("""
 
 # --- 4. HEADER & DYNAMIC BRIEF ---
 st.title("🛡️ NEON SENTINEL | Industrial Intelligence")
-st.caption("Professional Intelligence & Clinical Data Analysis Pipeline")
+st.caption("Autonomous Supply Chain  &  Logistics  Intelligence")
 st.markdown(f'<div class="intel-box">{get_intel_brief(count)}</div>', unsafe_allow_html=True)
 
 # --- 5. TOP ROW: DYNAMIC KPIs ---
