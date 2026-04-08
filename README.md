@@ -1,8 +1,3 @@
-To make this look professional while allowing you to use GitHub’s built-in **drag-and-drop** functionality, I have removed the raw Markdown headers (the `##` symbols) and replaced them with **HTML-styled sections**.
-
-This creates a clean, "Enterprise" look. When you edit this on GitHub, simply highlight the text inside the brackets and **drag your file directly onto it** to replace it with a link.
-
------
 
 # 🛡️ Supply Chain Intelligence | Neon Sentinel
 
