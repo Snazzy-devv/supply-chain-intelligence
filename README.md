@@ -3,7 +3,7 @@
 
 **Professional-grade AI logistics terminal for real-time global oversight.**
 
-Neon Sentinel is a high-stakes "War-Room" terminal designed to collapse the gap between raw data and strategic execution. By combining live commodity tracking, geospatial risk mapping, and multi-agent orchestration, it provides a mission-critical interface for modern supply chain management.
+Neon Sentinel is a high-stakes "intelligence" terminal designed to collapse the gap between raw data and strategic execution. By combining live commodity tracking, geospatial risk mapping, and multi-agent orchestration, it provides a mission-critical interface for modern supply chain management.
 
 <br>
 
