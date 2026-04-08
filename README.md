@@ -96,5 +96,5 @@ This project follows the **Professional Intelligence & Clinical Data Analysis** 
 <br>
 
 **📥 Contact & Support**
-**Developed by:** [Vash M. Patel](https://www.google.com/search?q=https://github.com/Snazzy-devv) (**Snazzy-devv**)  
+**Developed by:** (https://www.google.com/search?q=https://github.com/Snazzy-devv) (**Snazzy-devv**)  
 For inquiries regarding custom agent deployment or enterprise integration, please open an issue in this repository.
