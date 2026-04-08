@@ -22,7 +22,11 @@ Neon Sentinel is a high-stakes "War-Room" terminal designed to collapse the gap 
 **🎥 video demo **
 *Full technical walkthrough of the AI Commander, Sentinel-Scan process, and 20s Pulse cycle.*
 
-https://github.com/user-attachments/assets/77e9c277-1bc3-461e-80a2-3f951604c56d
+
+https://github.com/user-attachments/assets/6c966979-4c1c-4590-8e09-44fabee5dc45
+
+
+
 
 
 <br>
