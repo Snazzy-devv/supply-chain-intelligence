@@ -8,13 +8,22 @@ Neon Sentinel is a high-stakes "War-Room" terminal designed to collapse the gap 
 <br>
 
 **📺 Media & Demonstration**
-*To add your media, edit this file on GitHub and drag your files into the areas below.*
+**📸 [live  Dashboard Screenshots ]**
+*High-resolution captures of the Glassmorphism UI, Global map, and Risk Metrics.*
+<img width="1366" height="768" alt="Screenshot (208)" src="https://github.com/user-attachments/assets/e3bd411c-638c-4018-92c4-0e615c59ee14" />
+<img width="1366" height="768" alt="Screenshot (206)" src="https://github.com/user-attachments/assets/e4186556-e9c9-45dd-8cb3-745d359ec7b8" />
+<img width="1366" height="768" alt="Screenshot (205)" src="https://github.com/user-attachments/assets/e3a97d3a-d557-4917-9897-530747e62882" />
+<img width="1366" height="768" alt="Screenshot (204)" src="https://github.com/user-attachments/assets/f70771fd-2494-4bb7-a3b9-c0be67025b58" />
+<img width="1366" height="768" alt="Screenshot (203)" src="https://github.com/user-attachments/assets/cc890055-c588-42b1-babb-7ae513ddd07e" />
+<img width="1366" height="768" alt="Screenshot (210)" src="https://github.com/user-attachments/assets/131209a1-d9cd-40b3-b6d1-445beade5860" />
+<img width="1366" height="768" alt="Screenshot (209)" src="https://github.com/user-attachments/assets/a8177a8e-d975-4318-ab2d-f64fac568b57" />
 
-**📸 [Drag and drop your Dashboard Screenshots here]**
-*High-resolution captures of the Glassmorphism UI, Global War-Room, and Risk Metrics.*
 
-**🎥 [Drag and drop your Video Demo .mp4 here]**
+**🎥 video demo **
 *Full technical walkthrough of the AI Commander, Sentinel-Scan process, and 20s Pulse cycle.*
+
+https://github.com/user-attachments/assets/77e9c277-1bc3-461e-80a2-3f951604c56d
+
 
 <br>
 
